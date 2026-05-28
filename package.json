@@ -5,13 +5,17 @@
   "type": "module",
   "scripts": {
     "start": "node src/main.js",
-    "demo": "node src/main.js --demo",
+    "dev": "node --watch src/main.js",
+    "serve": "node src/render-server.js",
+    "build:web": "cd web && npm run build",
     "test": "node --test src/**/*.test.js"
   },
   "dependencies": {
+    "@hono/node-server": "^1.13.7",
     "bcryptjs": "^3.0.3",
     "better-sqlite3": "^12.10.0",
     "chokidar": "^5.0.0",
+    "hono": "^4.6.12",
     "jsonwebtoken": "^9.0.3",
     "three": "^0.184.0",
     "uuid": "^9.0.0"

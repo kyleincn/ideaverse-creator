@@ -1,0 +1,22 @@
+# Render Blueprint for IdeaVerse Creator
+# https://render.com/docs/blueprint-spec
+
+services:
+  - type: web
+    name: ideaverse-creator
+    runtime: node
+    region: singapore
+    buildCommand: npm install && cd web && npm install && npm run build
+    startCommand: npm run serve
+    healthCheckPath: /api/health
+    envVars:
+      - key: NODE_ENV
+        value: production
+      - key: PORT
+        value: 3000
+      - key: API_URL
+        fromService:
+          name: ideaverse-creator
+          type: web
+          envVarKey: RENDER_EXTERNAL_URL
+        value: ""
