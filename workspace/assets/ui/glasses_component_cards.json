@@ -1,0 +1,30 @@
+{
+  "version": "1.0",
+  "type": "UI_PANEL",
+  "generator": "IdeaVerse Creator Phase 1",
+  "panel": {
+    "title": "信息面板",
+    "width": 0.5,
+    "height": 0.35,
+    "elements": [
+      {
+        "type": "text",
+        "id": "title",
+        "content": "组件说明",
+        "style": {
+          "fontSize": 16,
+          "color": "#00d4ff"
+        }
+      },
+      {
+        "type": "text",
+        "id": "desc",
+        "content": "点击组件查看详细信息",
+        "style": {
+          "fontSize": 12,
+          "color": "#ffffff"
+        }
+      }
+    ]
+  }
+}

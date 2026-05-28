@@ -1,0 +1,1536 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>IdeaVerse Creator - MR Content Studio V3.0</title>
+  <style>
+    :root {
+      --bg: #eef2f5;
+      --panel: #ffffff;
+      --soft: #f7f9fb;
+      --ink: #17202a;
+      --muted: #6c7885;
+      --line: #dce3ea;
+      --nav: #111827;
+      --teal: #0f9f92;
+      --teal-dark: #08756e;
+      --blue: #2563eb;
+      --amber: #d58b16;
+      --red: #c34d3f;
+      --green: #1f8a5b;
+      --violet: #6d5bd0;
+      --shadow: 0 18px 44px rgba(21, 32, 43, 0.12);
+      font-family: Inter, "PingFang SC", "Microsoft YaHei", "Noto Sans CJK SC", Arial, sans-serif;
+    }
+
+    * { box-sizing: border-box; }
+
+    body {
+      margin: 0;
+      min-height: 100vh;
+      background: var(--bg);
+      color: var(--ink);
+    }
+
+    button, textarea, input, select { font: inherit; }
+
+    .app {
+      min-height: 100vh;
+      display: grid;
+      grid-template-columns: 232px minmax(0, 1fr);
+    }
+
+    /* Sidebar */
+    .sidebar {
+      background: var(--nav);
+      color: #e5edf4;
+      padding: 24px 18px;
+      display: flex;
+      flex-direction: column;
+      gap: 22px;
+    }
+
+    .brand {
+      display: flex;
+      align-items: center;
+      gap: 12px;
+      padding-bottom: 18px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.12);
+    }
+
+    .brand-mark {
+      width: 36px;
+      height: 36px;
+      border-radius: 8px;
+      display: grid;
+      place-items: center;
+      background: linear-gradient(135deg, #0f9f92, #f0b13f);
+      color: #fff;
+      font-weight: 800;
+    }
+
+    .brand strong { display: block; font-size: 17px; line-height: 1.1; }
+    .brand span { color: #9aa8b7; font-size: 12px; }
+
+    .nav-section { display: grid; gap: 8px; }
+    .nav-title { color: #8d9bab; font-size: 12px; padding: 0 10px 4px; }
+
+    .nav-item {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      min-height: 38px;
+      padding: 9px 10px;
+      border-radius: 7px;
+      color: #c6d1dd;
+      font-size: 14px;
+      cursor: pointer;
+      transition: all 0.2s;
+    }
+
+    .nav-item:hover { background: rgba(255,255,255,0.05); }
+
+    .nav-item.active {
+      background: rgba(15, 159, 146, 0.18);
+      color: #fff;
+      outline: 1px solid rgba(66, 204, 191, 0.28);
+    }
+
+    .dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: currentColor;
+      flex: 0 0 auto;
+    }
+
+    .side-card {
+      margin-top: auto;
+      background: rgba(255, 255, 255, 0.06);
+      border: 1px solid rgba(255, 255, 255, 0.1);
+      border-radius: 8px;
+      padding: 14px;
+    }
+
+    .side-card .label { color: #9aa8b7; font-size: 12px; margin-bottom: 8px; }
+    .side-card strong { font-size: 22px; }
+
+    /* Workspace */
+    .workspace {
+      min-width: 0;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .topbar {
+      min-height: 72px;
+      background: rgba(255, 255, 255, 0.88);
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 28px;
+      position: sticky;
+      top: 0;
+      z-index: 3;
+      backdrop-filter: blur(12px);
+    }
+
+    .topbar h1 { margin: 0; font-size: 20px; font-weight: 760; }
+    .topbar .sub { margin-top: 4px; font-size: 13px; color: var(--muted); }
+
+    .status-line {
+      display: flex;
+      gap: 10px;
+      align-items: center;
+      flex-wrap: wrap;
+      justify-content: flex-end;
+    }
+
+    .pill {
+      min-height: 30px;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      border: 1px solid var(--line);
+      background: #fff;
+      color: #3d4855;
+      border-radius: 999px;
+      padding: 6px 10px;
+      font-size: 12px;
+      white-space: nowrap;
+    }
+
+    .pill.good {
+      border-color: rgba(31, 138, 91, 0.26);
+      background: #ecf8f2;
+      color: #167048;
+    }
+
+    /* Content Layout */
+    .content {
+      padding: 22px 28px 28px;
+      display: grid;
+      grid-template-columns: minmax(430px, 0.94fr) minmax(510px, 1.06fr);
+      gap: 18px;
+      align-items: start;
+    }
+
+    .panel {
+      background: var(--panel);
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      box-shadow: var(--shadow);
+      overflow: hidden;
+    }
+
+    .panel-header {
+      min-height: 58px;
+      padding: 16px 18px;
+      border-bottom: 1px solid var(--line);
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      gap: 12px;
+    }
+
+    .panel-header h2 { margin: 0; font-size: 16px; font-weight: 740; }
+    .panel-body { padding: 18px; }
+
+    /* Tabs */
+    .tabs {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 6px;
+      padding: 5px;
+      background: #eef3f6;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      margin-bottom: 16px;
+    }
+
+    .tab {
+      min-height: 34px;
+      border: 0;
+      background: transparent;
+      border-radius: 6px;
+      color: #536170;
+      cursor: pointer;
+    }
+
+    .tab.active {
+      background: #fff;
+      color: var(--ink);
+      box-shadow: 0 2px 8px rgba(21, 32, 43, 0.08);
+    }
+
+    /* Form elements */
+    .field-label {
+      display: flex;
+      justify-content: space-between;
+      gap: 12px;
+      color: #334155;
+      font-size: 13px;
+      font-weight: 680;
+      margin: 0 0 8px;
+    }
+
+    textarea {
+      width: 100%;
+      min-height: 142px;
+      resize: vertical;
+      border: 1px solid #cfd9e3;
+      border-radius: 8px;
+      padding: 13px 14px;
+      line-height: 1.58;
+      color: #1f2937;
+      background: #fbfdff;
+      outline: none;
+    }
+
+    textarea:focus, input:focus, select:focus {
+      border-color: var(--teal);
+      box-shadow: 0 0 0 3px rgba(15, 159, 146, 0.12);
+    }
+
+    .input-grid {
+      display: grid;
+      grid-template-columns: repeat(2, minmax(0, 1fr));
+      gap: 12px;
+      margin-top: 14px;
+    }
+
+    .control { display: grid; gap: 7px; }
+    .control label { color: #526070; font-size: 12px; font-weight: 660; }
+    .control input, .control select {
+      height: 38px;
+      border: 1px solid #cfd9e3;
+      border-radius: 7px;
+      padding: 0 10px;
+      background: #fff;
+      color: #1f2937;
+      outline: none;
+    }
+
+    /* Templates */
+    .template-row {
+      display: grid;
+      grid-template-columns: repeat(3, 1fr);
+      gap: 10px;
+      margin-top: 16px;
+    }
+
+    .template {
+      border: 1px solid var(--line);
+      background: var(--soft);
+      border-radius: 8px;
+      padding: 12px;
+      min-height: 84px;
+      display: grid;
+      align-content: space-between;
+      cursor: pointer;
+      text-align: left;
+    }
+
+    .template.active {
+      border-color: rgba(15, 159, 146, 0.52);
+      background: #effaf8;
+    }
+
+    .template strong { font-size: 13px; }
+    .template span { color: var(--muted); font-size: 12px; line-height: 1.4; }
+
+    /* Buttons */
+    .actions { display: flex; flex-wrap: wrap; gap: 10px; margin-top: 18px; }
+
+    .btn {
+      min-height: 38px;
+      border: 1px solid transparent;
+      border-radius: 7px;
+      padding: 0 14px;
+      cursor: pointer;
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+      font-weight: 680;
+      color: #fff;
+      background: var(--teal);
+    }
+
+    .btn:hover { background: var(--teal-dark); }
+
+    .btn.secondary {
+      color: #253142;
+      background: #fff;
+      border-color: var(--line);
+    }
+
+    .btn.secondary:hover { background: #f5f8fb; }
+
+    /* Process Steps */
+    .process {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+      margin-top: 18px;
+    }
+
+    .step {
+      min-height: 76px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background: #fff;
+      padding: 10px;
+      display: grid;
+      gap: 6px;
+    }
+
+    .step .num {
+      width: 24px;
+      height: 24px;
+      border-radius: 50%;
+      display: grid;
+      place-items: center;
+      background: #e7f6f4;
+      color: var(--teal-dark);
+      font-size: 12px;
+      font-weight: 760;
+    }
+
+    .step strong { font-size: 12px; color: #2f3b49; }
+    .step span { color: var(--muted); font-size: 11px; line-height: 1.35; }
+
+    /* Preview Area */
+    .preview {
+      margin-top: 18px;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      background:
+        linear-gradient(90deg, rgba(20, 29, 41, 0.05) 1px, transparent 1px),
+        linear-gradient(rgba(20, 29, 41, 0.05) 1px, transparent 1px),
+        #f8fafc;
+      background-size: 28px 28px;
+      min-height: 230px;
+      position: relative;
+      overflow: hidden;
+    }
+
+    .scene-toolbar {
+      position: absolute;
+      top: 10px;
+      left: 10px;
+      right: 10px;
+      display: flex;
+      justify-content: space-between;
+      gap: 8px;
+      z-index: 2;
+    }
+
+    .mini-chip {
+      background: rgba(255, 255, 255, 0.92);
+      border: 1px solid rgba(207, 217, 227, 0.8);
+      border-radius: 999px;
+      padding: 5px 8px;
+      font-size: 11px;
+      color: #465465;
+    }
+
+    .asset-chip {
+      position: absolute;
+      left: 10px;
+      top: 44px;
+      z-index: 3;
+      display: inline-flex;
+      align-items: center;
+      gap: 7px;
+      min-height: 28px;
+      padding: 5px 9px;
+      border: 1px solid rgba(207, 217, 227, 0.86);
+      border-radius: 999px;
+      background: rgba(255, 255, 255, 0.92);
+      color: #3d4855;
+      font-size: 12px;
+      box-shadow: 0 8px 20px rgba(21, 32, 43, 0.08);
+    }
+
+    .asset-chip .dot { color: var(--teal); }
+
+    /* 3D Canvas */
+    #canvas-container {
+      position: absolute;
+      inset: 0;
+      width: 100%;
+      height: 100%;
+    }
+
+    #canvas-container canvas {
+      width: 100%;
+      height: 100%;
+    }
+
+    /* Metrics */
+    .output-grid {
+      display: grid;
+      grid-template-columns: repeat(5, minmax(0, 1fr));
+      gap: 8px;
+      padding: 14px 18px 0;
+    }
+
+    .metric {
+      background: #f7f9fb;
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 10px;
+      min-height: 72px;
+    }
+
+    .metric span { color: var(--muted); display: block; font-size: 11px; margin-bottom: 6px; }
+    .metric strong { font-size: 13px; line-height: 1.32; overflow-wrap: anywhere; }
+
+    /* JSON Output */
+    .json-wrap {
+      margin: 14px 18px 18px;
+      border: 1px solid #cfd9e3;
+      border-radius: 8px;
+      background: #101820;
+      overflow: hidden;
+    }
+
+    .json-head {
+      min-height: 42px;
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 0 12px;
+      border-bottom: 1px solid rgba(255, 255, 255, 0.09);
+      color: #cbd5df;
+      font-size: 12px;
+    }
+
+    .json-head .lights { display: flex; gap: 6px; }
+
+    .light {
+      width: 10px;
+      height: 10px;
+      border-radius: 50%;
+      background: #5f6d7c;
+    }
+
+    .light.red { background: #d95f54; }
+    .light.amber { background: #e0a03f; }
+    .light.green { background: #3fb679; }
+
+    pre {
+      margin: 0;
+      padding: 16px;
+      color: #d6e2ee;
+      font-size: 13px;
+      line-height: 1.55;
+      overflow: auto;
+      max-height: 420px;
+      white-space: pre-wrap;
+      overflow-wrap: anywhere;
+      font-family: "SFMono-Regular", Consolas, "Liberation Mono", monospace;
+    }
+
+    .key { color: #8bd7cf; }
+    .string { color: #ffd089; }
+    .number { color: #9ec5ff; }
+
+    /* Flow Cards */
+    .flow-row {
+      padding: 0 18px 18px;
+      display: grid;
+      grid-template-columns: repeat(3, minmax(0, 1fr));
+      gap: 10px;
+    }
+
+    .flow-card {
+      border: 1px solid var(--line);
+      border-radius: 8px;
+      padding: 12px;
+      background: #fff;
+      min-height: 92px;
+    }
+
+    .flow-card .tag {
+      display: inline-flex;
+      align-items: center;
+      min-height: 22px;
+      border-radius: 999px;
+      padding: 3px 8px;
+      color: #fff;
+      font-size: 11px;
+      margin-bottom: 9px;
+    }
+
+    .tag.blue { background: var(--blue); }
+    .tag.green { background: var(--green); }
+    .tag.red { background: var(--red); }
+
+    .flow-card strong { display: block; font-size: 13px; margin-bottom: 5px; }
+    .flow-card p { margin: 0; color: var(--muted); font-size: 12px; line-height: 1.45; }
+
+    /* Viewport Overlay */
+    .viewport-overlay {
+      position: absolute;
+      top: 16px;
+      right: 16px;
+      display: flex;
+      flex-direction: column;
+      gap: 8px;
+    }
+
+    .overlay-btn {
+      padding: 8px 16px;
+      background: rgba(18, 18, 26, 0.9);
+      border: 1px solid #2a2a3a;
+      border-radius: 6px;
+      color: #888;
+      font-size: 12px;
+      cursor: pointer;
+      backdrop-filter: blur(10px);
+      transition: all 0.2s;
+    }
+
+    .overlay-btn:hover {
+      background: rgba(0, 212, 255, 0.2);
+      color: #fff;
+      border-color: #00d4ff;
+    }
+
+    /* WebXR Button */
+    #webxr-button {
+      position: absolute;
+      bottom: 20px;
+      right: 20px;
+      padding: 12px 24px;
+      background: linear-gradient(135deg, #6d5bd0 0%, #5b21b6 100%);
+      border: none;
+      border-radius: 8px;
+      color: #fff;
+      font-size: 14px;
+      font-weight: 500;
+      cursor: pointer;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    #webxr-button:hover { opacity: 0.9; }
+    #webxr-button:disabled { background: #2a2a3a; color: #555; cursor: not-allowed; }
+
+    /* Interaction Hint */
+    .interaction-hint {
+      position: absolute;
+      bottom: 20px;
+      left: 50%;
+      transform: translateX(-50%);
+      padding: 10px 20px;
+      background: rgba(18, 18, 26, 0.9);
+      border: 1px solid #2a2a3a;
+      border-radius: 24px;
+      font-size: 12px;
+      color: #888;
+      backdrop-filter: blur(10px);
+      opacity: 0;
+      transition: all 0.3s;
+      display: flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .interaction-hint.visible { opacity: 1; bottom: 30px; }
+
+    .interaction-hint-icon {
+      width: 20px;
+      height: 20px;
+      background: rgba(0, 212, 255, 0.2);
+      border-radius: 50%;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      color: #00d4ff;
+    }
+
+    /* Loading Overlay */
+    .loading-overlay {
+      position: absolute;
+      top: 0;
+      left: 0;
+      right: 0;
+      bottom: 0;
+      background: rgba(10, 10, 15, 0.95);
+      display: flex;
+      flex-direction: column;
+      align-items: center;
+      justify-content: center;
+      z-index: 100;
+      opacity: 0;
+      pointer-events: none;
+      transition: opacity 0.3s;
+    }
+
+    .loading-overlay.visible { opacity: 1; pointer-events: auto; }
+
+    .loading-spinner {
+      width: 48px;
+      height: 48px;
+      border: 3px solid #2a2a3a;
+      border-top-color: #0f9f92;
+      border-radius: 50%;
+      animation: spin 1s linear infinite;
+    }
+
+    @keyframes spin { to { transform: rotate(360deg); } }
+
+    .loading-text { margin-top: 20px; font-size: 14px; color: #888; }
+
+    .loading-progress {
+      margin-top: 12px;
+      width: 200px;
+      height: 4px;
+      background: #2a2a3a;
+      border-radius: 2px;
+      overflow: hidden;
+    }
+
+    .loading-progress-bar {
+      height: 100%;
+      background: linear-gradient(90deg, #0f9f92, #f0b13f);
+      width: 0%;
+      transition: width 0.3s;
+    }
+
+    /* Pipeline Status */
+    .pipeline-status {
+      position: absolute;
+      top: 16px;
+      left: 16px;
+      background: rgba(18, 18, 26, 0.9);
+      border: 1px solid #2a2a3a;
+      border-radius: 8px;
+      padding: 12px 16px;
+      backdrop-filter: blur(10px);
+      font-size: 11px;
+      display: none;
+    }
+
+    .pipeline-status.visible { display: block; }
+
+    .pipeline-title { color: #666; margin-bottom: 8px; text-transform: uppercase; letter-spacing: 0.5px; }
+
+    .pipeline-steps { display: flex; gap: 12px; }
+
+    .pipeline-step { display: flex; align-items: center; gap: 4px; color: #555; }
+    .pipeline-step.active { color: #0f9f92; }
+    .pipeline-step.complete { color: #3fb679; }
+
+    .pipeline-step-icon {
+      width: 16px;
+      height: 16px;
+      border-radius: 50%;
+      background: #2a2a3a;
+      display: flex;
+      align-items: center;
+      justify-content: center;
+      font-size: 9px;
+    }
+
+    .pipeline-step.active .pipeline-step-icon { background: #0f9f92; color: #000; }
+    .pipeline-step.complete .pipeline-step-icon { background: #3fb679; color: #fff; }
+
+    /* Collaboration Panel */
+    .collab-panel {
+      position: fixed;
+      top: 0;
+      right: 0;
+      width: 340px;
+      height: 100vh;
+      background: var(--panel);
+      border-left: 1px solid var(--line);
+      box-shadow: -8px 0 32px rgba(21, 32, 43, 0.1);
+      z-index: 100;
+      display: flex;
+      flex-direction: column;
+    }
+
+    .collab-panel.visible { display: flex; }
+
+    .collab-header {
+      display: flex;
+      align-items: center;
+      justify-content: space-between;
+      padding: 18px 20px;
+      border-bottom: 1px solid var(--line);
+    }
+
+    .collab-header h3 { margin: 0; font-size: 16px; }
+
+    .collab-close {
+      width: 32px;
+      height: 32px;
+      border: 1px solid var(--line);
+      border-radius: 6px;
+      background: transparent;
+      cursor: pointer;
+      font-size: 18px;
+      color: var(--muted);
+    }
+
+    .collab-close:hover { background: var(--soft); }
+
+    .collab-content { padding: 20px; flex: 1; overflow-y: auto; }
+
+    .collab-section {
+      margin-bottom: 20px;
+    }
+
+    .collab-section label {
+      display: block;
+      font-size: 12px;
+      color: var(--muted);
+      margin-bottom: 8px;
+      font-weight: 600;
+    }
+
+    .collab-section input {
+      width: 100%;
+      height: 38px;
+      border: 1px solid #cfd9e3;
+      border-radius: 7px;
+      padding: 0 10px;
+      margin-bottom: 8px;
+    }
+
+    .collab-section .btn { width: 100%; margin-bottom: 8px; justify-content: center; }
+
+    .collab-users { display: flex; flex-direction: column; gap: 8px; }
+
+    .collab-user {
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      padding: 10px 12px;
+      background: var(--soft);
+      border-radius: 8px;
+      font-size: 13px;
+    }
+
+    .collab-user.local { background: #effaf8; }
+
+    .user-dot {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--muted);
+    }
+
+    .collab-user.local .user-dot { background: var(--teal); }
+
+    .user-badge {
+      margin-left: auto;
+      font-size: 10px;
+      color: var(--teal);
+      font-weight: 600;
+    }
+
+    .collab-sync-status {
+      display: flex;
+      align-items: center;
+      gap: 8px;
+      font-size: 12px;
+      color: var(--muted);
+    }
+
+    .sync-indicator {
+      width: 8px;
+      height: 8px;
+      border-radius: 50%;
+      background: var(--muted);
+    }
+
+    .sync-indicator.connected { background: var(--green); }
+    .sync-indicator.disconnected { background: var(--muted); }
+    .sync-indicator.connecting { background: var(--amber); animation: pulse 1s infinite; }
+
+    @keyframes pulse { 0%, 100% { opacity: 1; } 50% { opacity: 0.5; } }
+
+    .collab-actions { display: flex; flex-direction: column; gap: 8px; }
+
+    /* Responsive */
+    @media (max-width: 1180px) {
+      .app { grid-template-columns: 1fr; }
+      .sidebar { display: none; }
+      .content { grid-template-columns: 1fr; }
+    }
+  </style>
+</head>
+<body>
+  <div class="app">
+    <!-- Sidebar -->
+    <aside class="sidebar">
+      <div class="brand">
+        <div class="brand-mark">IV</div>
+        <div>
+          <strong>IdeaVerse</strong>
+          <span>MR Content Studio V3.0</span>
+        </div>
+      </div>
+
+      <nav class="nav-section" aria-label="模块导航">
+        <div class="nav-title">生成流程</div>
+        <div class="nav-item active" data-step="s1"><span class="dot"></span>S1 意图语义解析</div>
+        <div class="nav-item" data-step="s2"><span class="dot"></span>S2 多模态 AI 调度</div>
+        <div class="nav-item" data-step="s3"><span class="dot"></span>S3 工作区资产同步</div>
+        <div class="nav-item" data-step="s4"><span class="dot"></span>S4 视觉逻辑绑定</div>
+        <div class="nav-item" data-step="s5"><span class="dot"></span>S5 MR 引擎渲染</div>
+      </nav>
+
+      <nav class="nav-section" aria-label="输入源">
+        <div class="nav-title">输入源</div>
+        <div class="nav-item"><span class="dot"></span>自然语言文本</div>
+        <div class="nav-item"><span class="dot"></span>结构化表单</div>
+        <div class="nav-item"><span class="dot"></span>模板配置</div>
+      </nav>
+
+      <nav class="nav-section" aria-label="协作">
+        <div class="nav-title">多用户协作</div>
+        <div class="nav-item" id="collab-nav" data-panel="collab">
+          <span class="dot"></span>协作会话
+        </div>
+        <div class="nav-item" data-action="share">
+          <span class="dot"></span>分享场景
+        </div>
+      </nav>
+
+      <div class="side-card">
+        <div class="label">IntentObject 输出状态</div>
+        <strong id="status-value">Ready</strong>
+        <div class="label" style="margin-top:8px;">解析置信度 <span id="confidence-value">0.94</span></div>
+      </div>
+    </aside>
+
+    <!-- Collaboration Panel -->
+    <div id="collab-panel" class="collab-panel" style="display:none;">
+      <div class="collab-header">
+        <h3>协作会话</h3>
+        <button id="collab-close" class="collab-close">&times;</button>
+      </div>
+      <div class="collab-content">
+        <div class="collab-section">
+          <label>会话ID</label>
+          <input type="text" id="collab-session-id" placeholder="输入会话ID或创建新会话">
+          <button class="btn" id="collab-join-btn">加入会话</button>
+          <button class="btn secondary" id="collab-create-btn">创建新会话</button>
+        </div>
+        <div class="collab-section">
+          <label>当前用户</label>
+          <div id="collab-users" class="collab-users">
+            <div class="collab-user local">
+              <span class="user-dot"></span>
+              <span class="user-name">Local User</span>
+              <span class="user-badge">You</span>
+            </div>
+          </div>
+        </div>
+        <div class="collab-section">
+          <label>同步状态</label>
+          <div id="collab-sync-status" class="collab-sync-status">
+            <span class="sync-indicator disconnected"></span>
+            <span>未连接</span>
+          </div>
+        </div>
+        <div class="collab-actions">
+          <button class="btn secondary" id="collab-sync-scene">同步当前场景</button>
+          <button class="btn secondary" id="collab-leave">离开会话</button>
+        </div>
+      </div>
+    </div>
+
+    <!-- Main Workspace -->
+    <section class="workspace">
+      <header class="topbar">
+        <div>
+          <h1>S1 意图语义解析模块</h1>
+          <div class="sub">UserIntent 输入转换为 IntentObject 结构化参数对象</div>
+        </div>
+        <div class="status-line">
+          <span class="pill good"><span class="dot"></span>NLP Parser Online</span>
+          <span class="pill" id="workspace-name">Workspace: Default</span>
+          <span class="pill" id="build-version">Build 2026.05.28</span>
+        </div>
+      </header>
+
+      <div class="content">
+        <!-- Input Panel -->
+        <section class="panel" aria-label="输入面板">
+          <div class="panel-header">
+            <h2>多模态意图输入</h2>
+            <span class="pill">UserIntent</span>
+          </div>
+          <div class="panel-body">
+            <div class="tabs" role="tablist">
+              <button class="tab active" type="button">自然语言</button>
+              <button class="tab" type="button">结构化表单</button>
+              <button class="tab" type="button">模板配置</button>
+            </div>
+
+            <label class="field-label" for="intent-input">
+              <span>自然语言意图描述</span>
+              <span id="char-count">0 字</span>
+            </label>
+            <textarea id="intent-input" placeholder="描述你想要创建的 MR 场景..."></textarea>
+
+            <div class="input-grid">
+              <div class="control">
+                <label for="intent-type">意图类型候选</label>
+                <select id="intent-type">
+                  <option value="EDUCATION">EDUCATION</option>
+                  <option value="DEMO">DEMO</option>
+                  <option value="INTERACTION">INTERACTION</option>
+                </select>
+              </div>
+              <div class="control">
+                <label for="anchor">空间锚点</label>
+                <select id="anchor">
+                  <option value="table_center">table_center</option>
+                  <option value="wall_anchor">wall_anchor</option>
+                  <option value="floor_plane">floor_plane</option>
+                  <option value="hand_tracking_space">hand_tracking_space</option>
+                </select>
+              </div>
+              <div class="control">
+                <label for="asset-profile">资产生成配置</label>
+                <select id="asset-profile">
+                  <option value="3D Model + Labels + Audio">3D Model + Labels + Audio</option>
+                  <option value="3D Model + UI Panel">3D Model + UI Panel</option>
+                  <option value="Animation + Interaction Rule">Animation + Interaction Rule</option>
+                </select>
+              </div>
+              <div class="control">
+                <label for="language">讲解语言</label>
+                <select id="language">
+                  <option value="zh-CN">zh-CN</option>
+                  <option value="en-US">en-US</option>
+                  <option value="ja-JP">ja-JP</option>
+                </select>
+              </div>
+            </div>
+
+            <div class="template-row">
+              <button class="template active" data-template="medical" type="button">
+                <strong>医学教学</strong>
+                <span>模型标注、路径高亮、语音讲解</span>
+              </button>
+              <button class="template" data-template="product" type="button">
+                <strong>产品演示</strong>
+                <span>结构拆解、部件说明、交互热点</span>
+              </button>
+              <button class="template" data-template="training" type="button">
+                <strong>流程培训</strong>
+                <span>步骤引导、任务检查、动作反馈</span>
+              </button>
+            </div>
+
+            <div class="actions">
+              <button class="btn" id="generate-btn" type="button">运行解析</button>
+              <button class="btn secondary" id="copy-btn" type="button">复制 JSON</button>
+              <button class="btn secondary" id="print-btn" type="button">打印截图页</button>
+            </div>
+
+            <div class="process" aria-label="解析流程">
+              <div class="step">
+                <div class="num">1</div>
+                <strong>Preprocess</strong>
+                <span>文本归一化与分词</span>
+              </div>
+              <div class="step">
+                <div class="num">2</div>
+                <strong>Classify</strong>
+                <span>规则引擎与语义相似度</span>
+              </div>
+              <div class="step">
+                <div class="num">3</div>
+                <strong>NER</strong>
+                <span>对象、属性、动作、空间实体</span>
+              </div>
+              <div class="step">
+                <div class="num">4</div>
+                <strong>Map</strong>
+                <span>实体映射为生成参数</span>
+              </div>
+              <div class="step">
+                <div class="num">5</div>
+                <strong>Validate</strong>
+                <span>Schema 校验与输出封装</span>
+              </div>
+            </div>
+
+            <!-- 3D Preview -->
+            <div class="preview" aria-label="MR 场景预览">
+              <div class="scene-toolbar">
+                <span class="mini-chip">MR Preview</span>
+                <span class="mini-chip" id="preview-anchor">Anchor: table_center</span>
+              </div>
+              <div class="asset-chip"><span class="dot"></span><span id="asset-label">Intent asset: 3D Model + Labels + Audio</span></div>
+              <div id="canvas-container"></div>
+            </div>
+          </div>
+        </section>
+
+        <!-- Output Panel -->
+        <section class="panel" aria-label="输出面板">
+          <div class="panel-header">
+            <h2>IntentObject 结构化输出</h2>
+            <span class="pill good" id="schema-state">Schema Valid</span>
+          </div>
+
+          <div class="output-grid">
+            <div class="metric">
+              <span>intent_type</span>
+              <strong id="metric-type">EDUCATION</strong>
+            </div>
+            <div class="metric">
+              <span>subject</span>
+              <strong id="metric-subject">-</strong>
+            </div>
+            <div class="metric">
+              <span>target_assets</span>
+              <strong id="metric-assets">-</strong>
+            </div>
+            <div class="metric">
+              <span>spatial_constraints</span>
+              <strong id="metric-spatial">-</strong>
+            </div>
+            <div class="metric">
+              <span>interaction_rules</span>
+              <strong id="metric-rules">-</strong>
+            </div>
+          </div>
+
+          <div class="json-wrap">
+            <div class="json-head">
+              <div class="lights">
+                <span class="light red"></span>
+                <span class="light amber"></span>
+                <span class="light green"></span>
+              </div>
+              <span>IntentObject.json</span>
+            </div>
+            <pre id="json-output" aria-live="polite"></pre>
+          </div>
+
+          <div class="flow-row">
+            <div class="flow-card">
+              <span class="tag blue">Entity</span>
+              <strong>对象实体</strong>
+              <p id="entity-desc">心脏模型、主动脉、心室、血流路径</p>
+            </div>
+            <div class="flow-card">
+              <span class="tag green">Spatial</span>
+              <strong>空间实体</strong>
+              <p id="spatial-desc">桌面中央、悬浮显示、面向操作者</p>
+            </div>
+            <div class="flow-card">
+              <span class="tag red">Action</span>
+              <strong>动作实体</strong>
+              <p id="action-desc">学生点击、目标高亮、播放中文讲解</p>
+            </div>
+          </div>
+        </section>
+      </div>
+    </section>
+  </div>
+
+  <!-- Three.js -->
+  <script type="importmap">
+  {
+    "imports": {
+      "three": "https://unpkg.com/three@0.160.0/build/three.module.js",
+      "three/addons/": "https://unpkg.com/three@0.160.0/examples/jsm/"
+    }
+  }
+  </script>
+
+  <!-- Application -->
+  <script type="module">
+    import * as THREE from 'three'
+    import { WebXRRenderer } from './modules/webxr-renderer.js'
+    import { CollaborationManager } from './modules/collaboration.js'
+
+    // Initialize Collaboration Manager
+    const collab = new CollaborationManager()
+    const TEMPLATES = {
+      medical: {
+        text: '创建一个用于心脏解剖教学的混合现实场景：在桌面中央悬浮显示透明心脏模型，标注主动脉和心室；学生点击主动脉时高亮血流路径，并播放 15 秒中文讲解音频。',
+        type: 'EDUCATION',
+        anchor: 'table_center',
+        assetProfile: '3D Model + Labels + Audio',
+        language: 'zh-CN',
+        entity: '心脏模型、主动脉、心室、血流路径',
+        spatial: '桌面中央、悬浮显示、面向操作者',
+        action: '学生点击、目标高亮、播放中文讲解'
+      },
+      product: {
+        text: '生成一个智能眼镜产品演示场景：在展台上方展示可拆解 3D 模型，点击镜腿时展开传感器说明卡片，并播放佩戴方式动画。',
+        type: 'DEMO',
+        anchor: 'table_center',
+        assetProfile: '3D Model + UI Panel',
+        language: 'zh-CN',
+        entity: '智能眼镜、镜腿、传感器、说明卡片',
+        spatial: '展台上方、悬浮展示',
+        action: '点击镜腿、展开说明卡、播放动画'
+      },
+      training: {
+        text: '创建设备维护流程培训：在真实设备旁按步骤显示操作指引，学员靠近阀门时提示检查压力，完成后给出绿色反馈。',
+        type: 'INTERACTION',
+        anchor: 'floor_plane',
+        assetProfile: 'Animation + Interaction Rule',
+        language: 'zh-CN',
+        entity: '阀门、设备、压力表、操作指引',
+        spatial: '真实设备旁、地面锚点',
+        action: '靠近阀门、提示检查、完成反馈'
+      }
+    }
+
+    // DOM Elements
+    const textarea = document.getElementById('intent-input')
+    const charCount = document.getElementById('char-count')
+    const typeSelect = document.getElementById('intent-type')
+    const anchorSelect = document.getElementById('anchor')
+    const assetSelect = document.getElementById('asset-profile')
+    const languageSelect = document.getElementById('language')
+    const jsonOutput = document.getElementById('json-output')
+    const generateBtn = document.getElementById('generate-btn')
+    const copyBtn = document.getElementById('copy-btn')
+    const statusValue = document.getElementById('status-value')
+    const confidenceValue = document.getElementById('confidence-value')
+
+    // Initialize WebXR Renderer
+    const container = document.getElementById('canvas-container')
+    const webxr = new WebXRRenderer()
+    webxr.init(container)
+    webxr.startRenderLoop()
+
+    // API Server URL
+    const API_URL = 'http://localhost:3000/api'
+
+    // Load scene on init
+    loadScene('mock-config')
+
+    // Run pipeline via API
+    async function runPipelineViaAPI(text, options) {
+      try {
+        const response = await fetch(`${API_URL}/generate`, {
+          method: 'POST',
+          headers: { 'Content-Type': 'application/json' },
+          body: JSON.stringify({ intent: text, ...options })
+        })
+
+        if (!response.ok) {
+          throw new Error(`API error: ${response.status}`)
+        }
+
+        const result = await response.json()
+
+        if (result.success && result.webxrConfig) {
+          webxr.loadSceneConfig(result.webxrConfig)
+        }
+
+        return result
+      } catch (err) {
+        console.warn('[API] Pipeline not available, using local parse:', err.message)
+        return null
+      }
+    }
+
+    // Syntax highlight for JSON
+    function syntaxHighlight(json) {
+      return json
+        .replace(/&/g, "&amp;")
+        .replace(/</g, "&lt;")
+        .replace(/>/g, "&gt;")
+        .replace(/("(\\u[a-zA-Z0-9]{4}|\\[^u]|[^\\"])*"(\s*:)?|\b(true|false|null)\b|-?\d+(?:\.\d*)?(?:[eE][+\-]?\d+)?)/g, match => {
+          let cls = "number"
+          if (/^"/.test(match)) cls = /:$/.test(match) ? "key" : "string"
+          return `<span class="${cls}">${match}</span>`
+        })
+    }
+
+    // Parse intent (simplified version)
+    function parseIntent(text, options = {}) {
+      const { type = 'EDUCATION', anchor = 'table_center', assetProfile = '3D Model + Labels + Audio' } = options
+
+      // Extract entities
+      const entities = { objects: [], attributes: [], actions: [], spatial: [] }
+
+      if (text.includes('心脏')) entities.objects.push('heart')
+      if (text.includes('眼镜')) entities.objects.push('glasses')
+      if (text.includes('设备') || text.includes('阀门')) entities.objects.push('valve')
+
+      if (text.includes('透明')) entities.attributes.push('transparent')
+      if (text.includes('可交互')) entities.attributes.push('interactive')
+      if (text.includes('悬浮')) entities.attributes.push('floating')
+      if (text.includes('高亮')) entities.attributes.push('highlight')
+
+      if (text.includes('点击')) entities.actions.push('tap')
+      if (text.includes('靠近')) entities.actions.push('proximity')
+
+      entities.spatial.push(anchor)
+
+      // Generate target assets
+      const targetAssets = []
+      if (assetProfile.includes('3D')) targetAssets.push('MODEL_3D: model.glb')
+      if (assetProfile.includes('Labels')) targetAssets.push('UI_LABEL: labels.json')
+      if (assetProfile.includes('Audio')) targetAssets.push('AUDIO: narration.wav')
+      if (assetProfile.includes('Panel')) targetAssets.push('UI_PANEL: info_cards.json')
+      if (assetProfile.includes('Animation')) targetAssets.push('ANIMATION: sequence.timeline')
+
+      // Generate interaction rules
+      const interactionRules = []
+      if (entities.actions.includes('tap')) {
+        interactionRules.push({
+          rule_id: 'rule_tap_highlight',
+          trigger: 'user_tap(target: primary_object)',
+          condition: 'true',
+          action: [{ type: 'HIGHLIGHT' }, { type: 'SHOW_LABEL' }],
+          feedback: 'visual_emphasis'
+        })
+      }
+      if (entities.actions.includes('proximity')) {
+        interactionRules.push({
+          rule_id: 'rule_proximity_prompt',
+          trigger: 'user_proximity(distance < 0.6m)',
+          condition: 'training_mode == true',
+          action: [{ type: 'SHOW_PROMPT' }],
+          feedback: 'tooltip_display'
+        })
+      }
+
+      // Infer subject
+      let subject = '混合现实内容生成场景'
+      if (text.includes('心脏')) subject = '可交互心脏结构教学场景'
+      else if (text.includes('眼镜')) subject = '智能眼镜产品结构演示场景'
+      else if (text.includes('维护') || text.includes('设备')) subject = '设备维护流程培训场景'
+
+      // Generate ID
+      const now = new Date()
+      const dateStr = now.toISOString().slice(0, 10).replace(/-/g, '')
+      const seq = String(Math.floor(Math.random() * 9999)).padStart(4, '0')
+      const intentId = `IV-S1-${dateStr}-${seq}`
+
+      return {
+        intentObj: {
+          intent_id: intentId,
+          intent_type: type,
+          subject,
+          target_assets: targetAssets,
+          spatial_constraints: {
+            anchor,
+            placement: anchor === 'table_center' ? 'float_above_table_center' : 'bind_to_detected_plane',
+            height_offset_m: 0.35,
+            scale: '1.2m',
+            orientation: 'face_user',
+            safe_distance_m: 0.6
+          },
+          interaction_rules: interactionRules
+        },
+        confidence: 0.85 + Math.random() * 0.1
+      }
+    }
+
+    // Load scene config
+    async function loadScene(intentId) {
+      const mockConfig = {
+        scene_name: 'IV_Scene_' + intentId,
+        intent_id: intentId,
+        assets: [
+          { id: 'asset-1', type: 'MODEL_3D', filename: 'heart_transparent.glb' },
+          { id: 'asset-2', type: 'UI_LABEL', filename: 'heart_anatomy_labels.json' },
+          { id: 'asset-3', type: 'AUDIO', filename: 'heart_explanation.wav' }
+        ],
+        rules: [{
+          rule_id: 'rule_tap_aorta_highlight_flow',
+          trigger_asset_id: 'asset-1',
+          actions: [{ type: 'HIGHLIGHT' }, { type: 'SHOW_LABEL' }]
+        }],
+        spatial: { height_offset_m: 0.35 }
+      }
+
+      webxr.loadSceneConfig(mockConfig)
+    }
+
+    // Render output
+    function render() {
+      const text = textarea.value.trim()
+      charCount.textContent = `${text.length} 字`
+
+      if (!text) {
+        jsonOutput.innerHTML = '<span class="string">// 输入自然语言意图描述以生成 IntentObject</span>'
+        document.getElementById('metric-type').textContent = '-'
+        document.getElementById('metric-subject').textContent = '-'
+        document.getElementById('metric-assets').textContent = '-'
+        document.getElementById('metric-spatial').textContent = '-'
+        document.getElementById('metric-rules').textContent = '-'
+        return
+      }
+
+      const options = {
+        type: typeSelect.value,
+        anchor: anchorSelect.value,
+        assetProfile: assetSelect.value
+      }
+
+      const { intentObj, confidence } = parseIntent(text, options)
+
+      // Update JSON output
+      const jsonStr = JSON.stringify(intentObj, null, 2)
+      jsonOutput.innerHTML = syntaxHighlight(jsonStr)
+
+      // Update metrics
+      document.getElementById('metric-type').textContent = intentObj.intent_type
+      document.getElementById('metric-subject').textContent = intentObj.subject.length > 15
+        ? intentObj.subject.slice(0, 15) + '...'
+        : intentObj.subject
+      document.getElementById('metric-assets').textContent = intentObj.target_assets.map(a => a.split(':')[0]).join(' / ')
+      document.getElementById('metric-spatial').textContent = intentObj.spatial_constraints.anchor
+      document.getElementById('metric-rules').textContent = intentObj.interaction_rules.length > 0
+        ? intentObj.interaction_rules[0].trigger.split('(')[0].replace('user_', '')
+        : '-'
+
+      // Update status
+      statusValue.textContent = 'Parsed'
+      confidenceValue.textContent = confidence.toFixed(2)
+
+      // Update preview anchor
+      document.getElementById('preview-anchor').textContent = `Anchor: ${intentObj.spatial_constraints.anchor}`
+      document.getElementById('asset-label').textContent = `Intent asset: ${assetSelect.value}`
+
+      // Update entity descriptions based on template
+      const template = Object.values(TEMPLATES).find(t => text.includes(t.text.slice(0, 20)))
+      if (template) {
+        document.getElementById('entity-desc').textContent = template.entity
+        document.getElementById('spatial-desc').textContent = template.spatial
+        document.getElementById('action-desc').textContent = template.action
+      }
+
+      // Load scene
+      loadScene(intentObj.intent_id)
+    }
+
+    // Event listeners
+    [textarea, typeSelect, anchorSelect, assetSelect, languageSelect].forEach(el => {
+      el.addEventListener('input', render)
+    })
+
+    generateBtn.addEventListener('click', async () => {
+      const schemaState = document.getElementById('schema-state')
+      schemaState.textContent = 'Generating...'
+      schemaState.classList.remove('good')
+
+      const text = textarea.value.trim()
+      const options = {
+        intentType: typeSelect.value,
+        anchor: anchorSelect.value,
+        assetProfile: assetSelect.value,
+        language: languageSelect.value
+      }
+
+      // Try API first, fallback to local
+      const apiResult = await runPipelineViaAPI(text, options)
+
+      setTimeout(() => {
+        render()
+        schemaState.textContent = apiResult ? 'Pipeline Complete' : 'Schema Valid'
+        schemaState.classList.add('good')
+      }, 500)
+    })
+
+    copyBtn.addEventListener('click', async () => {
+      const json = JSON.stringify(JSON.parse(jsonOutput.textContent), null, 2)
+      try {
+        await navigator.clipboard.writeText(json)
+        copyBtn.textContent = '已复制 JSON'
+        setTimeout(() => copyBtn.textContent = '复制 JSON', 1200)
+      } catch {
+        copyBtn.textContent = '复制失败'
+        setTimeout(() => copyBtn.textContent = '复制 JSON', 1200)
+      }
+    })
+
+    document.getElementById('print-btn').addEventListener('click', () => window.print())
+
+    // Template selection
+    document.querySelectorAll('.template').forEach(btn => {
+      btn.addEventListener('click', () => {
+        document.querySelectorAll('.template').forEach(b => b.classList.remove('active'))
+        btn.classList.add('active')
+
+        const config = TEMPLATES[btn.dataset.template]
+        textarea.value = config.text
+        typeSelect.value = config.type
+        anchorSelect.value = config.anchor
+        assetSelect.value = config.assetProfile
+        languageSelect.value = config.language
+
+        render()
+      })
+    })
+
+    // Navigation
+    document.querySelectorAll('.nav-item[data-step]').forEach(item => {
+      item.addEventListener('click', () => {
+        document.querySelectorAll('.nav-item').forEach(n => n.classList.remove('active'))
+        item.classList.add('active')
+      })
+    })
+
+    // Collaboration panel toggle
+    document.getElementById('collab-nav')?.addEventListener('click', () => {
+      document.getElementById('collab-panel').classList.toggle('visible')
+    })
+
+    document.getElementById('collab-close')?.addEventListener('click', () => {
+      document.getElementById('collab-panel').classList.remove('visible')
+    })
+
+    // Collaboration: Create session
+    document.getElementById('collab-create-btn')?.addEventListener('click', async () => {
+      const sessionId = `session_${Date.now().toString(36)}`
+      document.getElementById('collab-session-id').value = sessionId
+      await collab.initSession(sessionId)
+      updateCollabUI()
+    })
+
+    // Collaboration: Join session
+    document.getElementById('collab-join-btn')?.addEventListener('click', async () => {
+      const sessionId = document.getElementById('collab-session-id').value.trim()
+      if (!sessionId) return
+      await collab.joinSession(sessionId)
+      updateCollabUI()
+    })
+
+    // Collaboration: Leave session
+    document.getElementById('collab-leave')?.addEventListener('click', async () => {
+      await collab.leaveSession()
+      updateCollabUI()
+    })
+
+    // Collaboration: Sync scene
+    document.getElementById('collab-sync-scene')?.addEventListener('click', () => {
+      const sceneState = { intentObj: lastIntentObj, timestamp: Date.now() }
+      collab.syncSceneState(sceneState)
+    })
+
+    // Update collaboration UI
+    function updateCollabUI() {
+      const status = collab.getStatus()
+      const syncStatus = document.getElementById('collab-sync-status')
+      const usersEl = document.getElementById('collab-users')
+
+      // Update sync status
+      const indicator = syncStatus?.querySelector('.sync-indicator')
+      if (indicator) {
+        indicator.className = `sync-indicator ${status.connected ? 'connected' : 'disconnected'}`
+      }
+      if (syncStatus) syncStatus.querySelector('span:last-child').textContent =
+        status.connected ? '已连接' : '未连接'
+
+      // Update users list
+      if (usersEl) {
+        usersEl.innerHTML = status.users.map(u => `
+          <div class="collab-user ${u.isLocal ? 'local' : ''}">
+            <span class="user-dot"></span>
+            <span class="user-name">${u.name}</span>
+            ${u.isLocal ? '<span class="user-badge">You</span>' : ''}
+          </div>
+        `).join('')
+      }
+    }
+
+    // WebXR support check
+    if ('xr' in navigator) {
+      navigator.xr.isSessionSupported('immersive-ar').then(supported => {
+        const btn = document.getElementById('webxr-button')
+        if (supported) {
+          btn.disabled = false
+          btn.addEventListener('click', async () => {
+            try {
+              await webxr.startARSession()
+            } catch (err) {
+              console.error('[WebXR] Session failed:', err)
+            }
+          })
+        }
+      })
+    }
+
+    // Initial render
+    render()
+
+    console.log('[App] IdeaVerse Creator initialized')
+  </script>
+</body>
+</html>

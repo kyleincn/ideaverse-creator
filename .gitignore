@@ -1,0 +1,29 @@
+# Dependencies
+node_modules/
+
+# Environment files (contain API keys)
+.env
+.env.local
+.env.production
+
+# Workspace (generated files)
+workspace/assets/models/*.glb
+workspace/assets/audio/*.wav
+workspace/registry/*.json
+
+# Keep these template files
+!workspace/assets/models/.gitkeep
+!workspace/assets/audio/.gitkeep
+!workspace/assets/ui/.gitkeep
+!workspace/registry/.gitkeep
+
+# OS files
+.DS_Store
+Thumbs.db
+
+# Logs
+*.log
+npm-debug.log*
+
+# Unity
+unity_project/

@@ -1,0 +1,25 @@
+{
+  "version": "1.0",
+  "type": "UI_LABELS",
+  "generator": "IdeaVerse Creator Phase 1",
+  "labels": [
+    {
+      "id": "label_1",
+      "text": "主动脉",
+      "position": "top",
+      "color": "#ff4444"
+    },
+    {
+      "id": "label_2",
+      "text": "心室",
+      "position": "bottom",
+      "color": "#44ff44"
+    },
+    {
+      "id": "label_3",
+      "text": "心房",
+      "position": "left",
+      "color": "#4444ff"
+    }
+  ]
+}

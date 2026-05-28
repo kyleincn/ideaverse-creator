@@ -1,0 +1,48 @@
+/* MobileNav.css - 移动端底部导航 */
+.mobile-nav {
+  display: none;
+}
+
+@media (max-width: 767px) {
+  .mobile-nav {
+    display: flex;
+    position: fixed;
+    bottom: 0;
+    left: 0;
+    right: 0;
+    background: rgba(10, 10, 20, 0.98);
+    border-top: 1px solid rgba(15, 159, 146, 0.3);
+    padding: 6px 0;
+    padding-bottom: calc(6px + env(safe-area-inset-bottom, 0px));
+    z-index: 100;
+    box-shadow: 0 -4px 20px rgba(0, 0, 0, 0.5);
+  }
+
+  .mobile-nav-btn {
+    flex: 1;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    gap: 3px;
+    padding: 6px 4px;
+    background: none;
+    border: none;
+    color: rgba(255, 255, 255, 0.5);
+    font-size: 10px;
+    cursor: pointer;
+    transition: all 0.2s;
+  }
+
+  .mobile-nav-btn:hover {
+    color: rgba(255, 255, 255, 0.8);
+  }
+
+  .mobile-nav-btn.active {
+    color: #0F9F92;
+  }
+
+  .mobile-nav-btn-icon {
+    font-size: 18px;
+    line-height: 1;
+  }
+}

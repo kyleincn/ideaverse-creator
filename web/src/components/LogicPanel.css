@@ -1,0 +1,362 @@
+.logic-panel {
+  display: flex;
+  flex-direction: column;
+  gap: 15px;
+  min-height: 100%;
+}
+
+.section-header {
+  display: flex;
+  align-items: center;
+  justify-content: space-between;
+  gap: 12px;
+  padding-bottom: 12px;
+  border-bottom: 1px solid var(--line, rgba(255, 255, 255, 0.1));
+}
+
+.section-header h2 {
+  margin: 0;
+  font-size: 15px;
+  font-weight: 750;
+  color: var(--text, #fff);
+}
+
+.section-header p {
+  margin: 5px 0 0;
+  max-width: 260px;
+  font-size: 12px;
+  line-height: 1.45;
+  color: var(--muted, rgba(255, 255, 255, 0.6));
+}
+
+.rules-list {
+  display: flex;
+  flex-direction: column;
+  gap: 12px;
+}
+
+.rules-list label {
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--muted, rgba(255, 255, 255, 0.7));
+}
+
+.empty-state {
+  padding: 24px;
+  text-align: center;
+  font-size: 12px;
+  color: var(--faint, rgba(255, 255, 255, 0.4));
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px dashed var(--line, rgba(255, 255, 255, 0.15));
+  border-radius: 8px;
+}
+
+.rule-card {
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid var(--line, rgba(255, 255, 255, 0.1));
+  border-radius: 8px;
+  overflow: hidden;
+}
+
+.rule-header {
+  padding: 8px 12px;
+  background: rgba(25, 182, 166, 0.09);
+  border-bottom: 1px solid var(--line, rgba(255, 255, 255, 0.1));
+}
+
+.rule-id {
+  font-size: 11px;
+  color: #b9fff7;
+  font-family: monospace;
+}
+
+.rule-body {
+  display: grid;
+  grid-template-columns: 1fr 1fr 1fr;
+}
+
+.rule-col {
+  padding: 10px;
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.rule-col:not(:last-child) {
+  border-right: 1px solid rgba(255, 255, 255, 0.1);
+}
+
+.col-label {
+  font-size: 10px;
+  font-weight: 600;
+  color: var(--amber, #D58B16);
+  letter-spacing: 0;
+}
+
+.col-value {
+  font-size: 12px;
+  color: var(--text, rgba(255, 255, 255, 0.8));
+  line-height: 1.4;
+  overflow-wrap: anywhere;
+}
+
+.rule-feedback {
+  padding: 8px 12px;
+  font-size: 11px;
+  color: var(--muted, rgba(255, 255, 255, 0.5));
+  border-top: 1px solid var(--line, rgba(255, 255, 255, 0.1));
+}
+
+.assets-info {
+  display: flex;
+  flex-direction: column;
+  gap: 8px;
+  margin-top: auto;
+}
+
+.assets-info label {
+  font-size: 12px;
+  font-weight: 650;
+  color: var(--muted, rgba(255, 255, 255, 0.7));
+}
+
+.asset-list {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.asset-item {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 10px;
+  background: rgba(255, 255, 255, 0.035);
+  border-radius: 6px;
+  min-width: 0;
+}
+
+.asset-type {
+  font-size: 10px;
+  padding: 2px 6px;
+  background: rgba(25, 182, 166, 0.18);
+  border-radius: 4px;
+  color: #b9fff7;
+  flex: 0 0 auto;
+}
+
+.asset-name {
+  font-size: 12px;
+  color: var(--muted, rgba(255, 255, 255, 0.7));
+  white-space: nowrap;
+  overflow: hidden;
+  text-overflow: ellipsis;
+}
+
+/* 规则编辑器 */
+.rule-editor {
+  display: flex;
+  flex-direction: column;
+  gap: 10px;
+  padding: 14px;
+  background: rgba(255, 255, 255, 0.025);
+  border: 1px solid var(--line, rgba(255, 255, 255, 0.08));
+  border-radius: 8px;
+  margin-bottom: 4px;
+}
+
+.demo-btn {
+  padding: 10px 16px;
+  background: rgba(25, 182, 166, 0.15);
+  border: 1px solid rgba(25, 182, 166, 0.35);
+  border-radius: 8px;
+  color: var(--accent, #0F9F92);
+  font-size: 13px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: all 0.2s ease;
+}
+
+.demo-btn:hover {
+  background: rgba(25, 182, 166, 0.25);
+  border-color: rgba(25, 182, 166, 0.5);
+}
+
+.editor-row {
+  display: flex;
+  flex-direction: column;
+  gap: 6px;
+}
+
+.editor-row label {
+  font-size: 11px;
+  font-weight: 600;
+  color: var(--faint, rgba(255, 255, 255, 0.5));
+  text-transform: uppercase;
+  letter-spacing: 0;
+}
+
+.trigger-select,
+.condition-input {
+  padding: 8px 10px;
+  background: rgba(4, 8, 14, 0.58);
+  border: 1px solid var(--line, rgba(255, 255, 255, 0.15));
+  border-radius: 6px;
+  color: var(--text, rgba(255, 255, 255, 0.9));
+  font-size: 12px;
+  outline: none;
+  transition: border-color 0.2s;
+}
+
+.trigger-select:focus,
+.condition-input:focus {
+  border-color: #0F9F92;
+}
+
+.action-toggles {
+  display: flex;
+  flex-wrap: wrap;
+  gap: 7px;
+}
+
+.action-toggle {
+  min-height: 30px;
+  padding: 6px 10px;
+  background: rgba(4, 8, 14, 0.42);
+  border: 1px solid var(--line, rgba(255, 255, 255, 0.1));
+  border-radius: 7px;
+  color: var(--muted, rgba(255, 255, 255, 0.6));
+  font-size: 11px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.action-toggle:hover {
+  background: rgba(25, 182, 166, 0.1);
+  border-color: rgba(25, 182, 166, 0.3);
+}
+
+.action-toggle.active {
+  background: rgba(25, 182, 166, 0.18);
+  border-color: var(--accent, #0F9F92);
+  color: #b9fff7;
+}
+
+.add-rule-btn {
+  margin-top: 6px;
+  min-height: 38px;
+  padding: 8px 16px;
+  background: linear-gradient(135deg, var(--accent, #0F9F92), #0D8579);
+  border: none;
+  border-radius: 6px;
+  color: white;
+  font-size: 12px;
+  font-weight: 600;
+  cursor: pointer;
+  transition: opacity 0.2s;
+}
+
+.add-rule-btn:disabled {
+  opacity: 0.4;
+  cursor: not-allowed;
+}
+
+.add-rule-btn:not(:disabled):hover {
+  opacity: 0.9;
+}
+
+/* 规则卡片增强 */
+.rule-card {
+  background: rgba(255, 255, 255, 0.035);
+  border: 1px solid var(--line, rgba(255, 255, 255, 0.1));
+  border-radius: 8px;
+  overflow: hidden;
+  transition: all 0.3s;
+}
+
+.rule-card.rule-active {
+  border-color: var(--accent, #0F9F92);
+  box-shadow: 0 0 20px rgba(25, 182, 166, 0.22);
+}
+
+.rule-header {
+  padding: 8px 12px;
+  background: rgba(25, 182, 166, 0.09);
+  border-bottom: 1px solid var(--line, rgba(255, 255, 255, 0.1));
+  display: flex;
+  align-items: center;
+  gap: 8px;
+}
+
+.rule-id {
+  font-size: 11px;
+  color: #b9fff7;
+  font-family: monospace;
+  flex: 1;
+}
+
+.trigger-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(25, 182, 166, 0.16);
+  border: 1px solid rgba(25, 182, 166, 0.3);
+  border-radius: 4px;
+  color: #b9fff7;
+  font-size: 10px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.trigger-btn:hover {
+  background: var(--accent, #0F9F92);
+  color: white;
+}
+
+.delete-btn {
+  width: 24px;
+  height: 24px;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  background: rgba(255, 100, 100, 0.1);
+  border: 1px solid rgba(255, 100, 100, 0.2);
+  border-radius: 4px;
+  color: rgba(255, 100, 100, 0.7);
+  font-size: 14px;
+  cursor: pointer;
+  transition: all 0.2s;
+}
+
+.delete-btn:hover {
+  background: rgba(255, 100, 100, 0.2);
+  border-color: rgba(255, 100, 100, 0.4);
+  color: #ff6464;
+}
+
+/* 触发指示器 */
+.rule-triggered-indicator {
+  display: flex;
+  align-items: center;
+  gap: 8px;
+  padding: 8px 12px;
+  background: rgba(25, 182, 166, 0.14);
+  border-top: 1px solid rgba(25, 182, 166, 0.28);
+  color: #b9fff7;
+  font-size: 11px;
+}
+
+.pulse {
+  width: 8px;
+  height: 8px;
+  background: var(--accent, #0F9F92);
+  border-radius: 50%;
+  animation: pulse 1s ease-in-out infinite;
+}
+
+@keyframes pulse {
+  0%, 100% { opacity: 1; transform: scale(1); }
+  50% { opacity: 0.5; transform: scale(1.2); }
+}
