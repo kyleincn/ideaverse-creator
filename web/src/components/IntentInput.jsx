@@ -1,7 +1,7 @@
 import { useState, useEffect } from 'react'
 import { useStore } from '../store/index.js'
 import { useAuth } from '../context/AuthContext.jsx'
-import { getTemplates, createTemplate, useTemplate as useTemplateApi } from '../api/auth.js'
+import { getTemplates, createTemplate } from '../api/auth.js'
 import './IntentInput.css'
 
 export default function IntentInput({ onSaveScene }) {
@@ -43,15 +43,11 @@ export default function IntentInput({ onSaveScene }) {
   }
 
   const handleTemplate = async (template) => {
-    try {
-      await useTemplateApi(template.id)
-      setText(template.intent_template || template.intentTemplate)
-      if (template.intent_type) setIntentType(template.intent_type)
-      setShowTemplateModal(false)
-      addToast({ type: 'info', message: `已加载模板: ${template.name}` })
-    } catch (err) {
-      addToast({ type: 'error', message: err.message })
-    }
+    // 前端直接加载模板内容，无需调用后端 /use 接口
+    setText(template.intent_template || template.intentTemplate)
+    if (template.intent_type) setIntentType(template.intent_type)
+    setShowTemplateModal(false)
+    addToast({ type: 'info', message: `已加载模板: ${template.name}` })
   }
 
   const handlePreviewTemplate = (template) => {

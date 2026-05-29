@@ -216,7 +216,7 @@ export default function Viewer3D() {
 
   // Load asset model (from asset library)
   const loadAssetModel = useCallback((asset) => {
-    if (!sceneRef.current || !modelsGroupRef.current) return
+    if (!asset?.url || !sceneRef.current || !modelsGroupRef.current) return
     setLoading(true)
 
     const loader = new GLTFLoader()
@@ -226,7 +226,7 @@ export default function Viewer3D() {
         gltf.scene.userId = 'asset_' + Date.now()
         modelsGroupRef.current.add(gltf.scene)
 
-        const newModel = { id: gltf.scene.userId, name: asset.name, object: gltf.scene }
+        const newModel = { id: gltf.scene.userId, name: asset.name || asset.url.split('/').pop(), object: gltf.scene }
         setModels(prev => [...prev, newModel])
         setSelectedModelId(gltf.scene.userId)
 
@@ -621,7 +621,7 @@ export default function Viewer3D() {
   // Load model when user selects asset from picker
   useEffect(() => {
     if (!previewAsset?.url || !sceneRef.current) return
-    loadAssetModel(previewAsset.url, previewAsset.name)
+    loadAssetModel(previewAsset)
     setShowAssetPicker(false)
     setPreviewAsset(null)
   }, [previewAsset])
